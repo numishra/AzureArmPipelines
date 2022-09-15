@@ -4,7 +4,7 @@
 # https://aka.ms/yaml
 
 trigger:
-- master
+- main
 
 pool:
   vmImage: ubuntu-latest
@@ -19,7 +19,7 @@ steps:
     resourceGroupName: 'rg-AzureRmPipeline'
     location: 'Central US'
     templateLocation: 'URL of the file'
-    csmFileLink: 'https://github.com/numishra/AzureArmPipelines/blob/main/CreateWebApp/azuredeploy.json'
+    csmFileLink: 'https://raw.githubusercontent.com/numishra/AzureArmPipelines/main/CreateWebApp/azuredeploy.json?token=GHSAT0AAAAAABYWL5EP5SZG4QJJNJGJ4CFOYZDBMEA'
     overrideParameters: '-projectName AzurePipeLine'
     deploymentMode: 'Incremental'
     deploymentName: 'DeployPipelineTemplate'
