@@ -19,7 +19,7 @@ steps:
     resourceGroupName: 'rgpipeline'
     location: 'Central US'
     templateLocation: 'URL of the file'
-    csmFileLink: 'https://raw.githubusercontent.com/numishra/AzureArmPipelines/main/CreateWebApp/azuredeploy.json?token=GHSAT0AAAAAABYWL5EOOFJLDFUWVS7A4ZBYYZDBSHQ'
+    csmFileLink: 'https://raw.githubusercontent.com/numishra/AzureArmPipelines/main/1vm-lb-2nics/azuredeploy.json'
     overrideParameters: '-projectName armPipeLine'
     deploymentMode: 'Incremental'
     deploymentName: 'DeployPipelineTemplate'
