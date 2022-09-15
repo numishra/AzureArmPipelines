@@ -47,17 +47,17 @@
       "imageOffer": "WindowsServer",
       "imagePublisher": "MicrosoftWindowsServer",
       "imageSKU": "2019-Datacenter",
-      "lbName": "myLB",
+      "lbName": "LB1",
       "networkSecurityGroupName": "[concat(variables('subnetName'), '-nsg')]",
       "nic1NamePrefix": "nic1",
       "nic2NamePrefix": "nic2",
-      "publicIPAddressName": "myPublicIP",
+      "publicIPAddressName": "umpip1",
       "publicIPAddressType": "Dynamic",
       "storageAccountType": "Standard_LRS",
-      "subnetName": "Subnet-1",
+      "subnetName": "snet1",
       "subnetPrefix": "10.0.0.0/24",
-      "vmNamePrefix": "myVM",
-      "vnetName": "myVNET"
+      "vmNamePrefix": "um",
+      "vnetName": "vnet1"
     },
     "resources": [
       {
