@@ -4,15 +4,7 @@
     "parameters": {
       "adminUsername": {
         "value": "umishra"
-      },
-      "adminPassword": {
-        "reference": {
-          "keyVault": {
-            "id": "/subscriptions/fbbc8fd1-207b-4405-8613-1438348fd9d3/resourceGroups/mykeyvaultdeploymentrg/providers/Microsoft.KeyVault/vaults/kv1umishra"
-          },
-          "secretName": "adminPassword"
-        }
-      },
+      },      
       "dnsNameforLBIP": {
         "value": "lbip1arm"
       },
