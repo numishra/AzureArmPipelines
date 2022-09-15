@@ -20,6 +20,6 @@ steps:
     location: 'Central US'
     templateLocation: 'URL of the file'
     csmFileLink: 'https://raw.githubusercontent.com/numishra/AzureArmPipelines/main/CreateWebApp/azuredeploy.json?token=GHSAT0AAAAAABYWL5EOOFJLDFUWVS7A4ZBYYZDBSHQ'
-    overrideParameters: '-projectName AzurePipeLine'
+    overrideParameters: '-projectName armPipeLine'
     deploymentMode: 'Incremental'
     deploymentName: 'DeployPipelineTemplate'
