@@ -10,6 +10,12 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
+- task: AzureKeyVault@2
+  inputs:
+    azureSubscription: 'AzureRmPipeline-conn'
+    KeyVaultName: 'kv1umishra'
+    SecretsFilter: 'LocalAdmin'
+    RunAsPreJob: false
 - task: AzureResourceManagerTemplateDeployment@3
   inputs:
     deploymentScope: 'Resource Group'
@@ -20,5 +26,7 @@ steps:
     location: 'Central US'
     templateLocation: 'URL of the file'
     csmFileLink: 'https://raw.githubusercontent.com/numishra/AzureArmPipelines/main/1vm-lb-2nics/azuredeploy.json'
+    csmParametersFileLink: 'https://raw.githubusercontent.com/numishra/AzureArmPipelines/main/1vm-lb-2nics/azuredeploy.parameters.json'
+    overrideParameters: '-adminPassword LocalAdmin'
     deploymentMode: 'Incremental'
-    deploymentName: 'DeployPipelineTemplate'
+    deploymentName: 'deployarmtemplate'
