@@ -1,0 +1,174 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "existingVnetName": {
+        "type": "string",
+        "metadata": {
+          "description": "Name of existing VNet to which Azure Bastion should be deployed"
+        }
+      },
+      "vnetAddress": {
+        "type": "string",
+        "metadata": {
+          "description": "VNet IP address space"
+        }
+      },
+      "workSpaceId": {
+        "type": "string",
+        "metadata": {
+          "description": "Full log analytics workspace ID to store BastionAudit logs"
+        }
+      },
+      "bastionSubnet": {
+        "type": "string",
+        "metadata": {
+          "description": "Bastion subnet IP address space MUST be within vnet IP address space"
+        }
+      },
+      "bastionHostName": {
+        "type": "string",
+        "metadata": {
+          "description": "Name of Azure Bastion resource"
+        }
+      },
+      "bastionPublicIP": {
+        "type": "string",
+        "metadata": {
+          "description": "Name of Azure Public IP"
+        }
+      },
+      "dxcManaged": {
+        "type": "bool",
+        "allowedValues": [
+          true,
+          false
+        ],
+        "defaultValue": true,
+        "metadata": {
+          "description": "Specifies if this resource is managed by dxc"
+        }
+      },
+      "dxcMonitored": {
+        "type": "bool",
+        "allowedValues": [
+          true,
+          false
+        ],
+        "defaultValue": true,
+        "metadata": {
+          "description": "Specifies if this resource is monitored by dxc"
+        }
+      },
+      "dxcConfigurationCheck": {
+        "type": "string",
+        "defaultValue": "[utcNow('yyyyMMddTHHmmssZ')]",
+        "metadata": {
+          "description": "Specifies the date (03/05/2019) that the validation was completed.  If not entered, defaults to current run date"
+        }
+      },
+      "location": {
+        "type": "string",
+        "metadata": {
+          "description": "Azure region for Bastion and virtual network"
+        }
+      }
+    },
+    "variables": {
+      "newTags": {
+        "dxcManaged": "[parameters('dxcManaged')]",
+        "dxcMonitored": "[parameters('dxcMonitored')]",
+        "dxcConfigurationCheck": "[parameters('dxcConfigurationCheck')]"
+      },
+      "bastion-subnet-name": "AzureBastionSubnet",
+      "BastionlogsettingName": "bastionlog"
+    },
+    "resources": [
+      {
+        "type": "Microsoft.Network/publicIpAddresses",
+        "apiVersion": "2020-05-01",
+        "name": "[parameters('bastionPublicIP')]",
+        "location": "[parameters('location')]",
+        "sku": {
+          "name": "Standard"
+        },
+        "properties": {
+          "publicIPAllocationMethod": "Static"
+        }
+      },
+      {
+        "type": "Microsoft.Network/virtualNetworks",
+        "apiVersion": "2020-05-01",
+        "name": "[parameters('existingVnetName')]",
+        "location": "[parameters('location')]",
+        "properties": {
+          "addressSpace": {
+            "addressPrefixes": [
+              "[parameters('vnetAddress')]"
+            ]
+          },
+          "subnets": [
+            {
+              "name": "[variables('bastion-subnet-name')]",
+              "properties": {
+                "addressPrefix": "[parameters('bastionSubnet')]"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "Microsoft.Network/virtualNetworks/subnets",
+        "apiVersion": "2020-05-01",
+        "name": "[concat(parameters('existingVnetName'), '/', variables('bastion-subnet-name'))]",
+        "location": "[parameters('location')]",
+        "properties": {
+          "addressPrefix": "[parameters('bastionSubnet')]"
+        }
+      },
+      {
+        "type": "Microsoft.Network/bastionHosts",
+        "apiVersion": "2020-05-01",
+        "name": "[parameters('bastionHostName')]",
+        "location": "[parameters('location')]",
+        "tags": "[variables('newTags')]",
+        "dependsOn": [
+          "[resourceId('Microsoft.Network/publicIpAddresses', parameters('bastionPublicIP'))]",
+          "[resourceId('Microsoft.Network/virtualNetworks', parameters('existingVnetName'))]",
+          "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('existingVnetName'), variables('bastion-subnet-name'))]"
+        ],
+        "properties": {
+          "ipConfigurations": [
+            {
+              "name": "IpConf",
+              "properties": {
+                "subnet": {
+                  "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('existingVnetName'), variables('bastion-subnet-name'))]"
+                },
+                "publicIPAddress": {
+                  "id": "[resourceId('Microsoft.Network/publicIpAddresses', parameters('bastionPublicIP'))]"
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "Microsoft.Network/bastionHosts/providers/diagnosticSettings",
+        "apiVersion": "2017-05-01-preview",
+        "name": "[concat(parameters('bastionHostName'), '/Microsoft.Insights/', variables('BastionlogsettingName'))]",
+        "dependsOn": [
+          "[concat('Microsoft.Network/bastionHosts/', parameters('bastionHostName'))]"
+        ],
+        "properties": {
+          "workspaceId": "[parameters('workSpaceId')]",
+          "logs": [
+            {
+              "category": "BastionAuditLogs",
+              "enabled": "[if(equals(parameters('dxcMonitored'), bool('true')), bool('true'), bool('false'))]"
+            }
+          ]
+        }
+      }
+    ]
+  }
