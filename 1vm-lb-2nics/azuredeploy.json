@@ -2,18 +2,18 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-      "adminPassword": {
-        "type": "securestring",
-        "metadata": {
-          "description": "Admin password."
-        }
-      },      
       "adminUsername": {
         "type": "string",
         "metadata": {
           "description": "Admin username."
         }
       },
+      "adminPassword": {
+        "type": "securestring",
+        "metadata": {
+          "description": "Admin password."
+        }
+      },      
       "dnsNameforLBIP": {
         "type": "string",
         "metadata": {
